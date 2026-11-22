@@ -4,7 +4,7 @@ library(tidyverse)
 
 
 #Exploring the dataset
-pop <- read_csv("filepath/cps_women_lfp (1).csv")
+pop <- read_csv(here("Data task practice", "cps_women_lfp (1).csv"))
 
 #I am using these 2 functions to see what top and last few data look like
 head(pop)
