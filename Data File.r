@@ -20,21 +20,25 @@ anyDuplicated(pop)) #I used this function to count how many duplicated data ther
 #Firstly, I will remove male out of the sex column so I could only see the female data
 female_pop <- pop %>%
   filter(sex == "Female", age >= 16) %>% 
-  select(-c(cpsidp, covid_unemployed, covid_paid, covid_telework, telework_now, telework_before,telework_difference)) #I removed these columns out because they are not important for question1
+  select(-c(cpsidp, covid_unemployed, covid_paid, covid_telework, telework_now, telework_before,telework_difference)) %>%  #I removed these columns out because they are not important for question1
+  mutate(n_lfp = ifelse(lfp == "In labor force", 1,0))
 
+female_pop$lfp
 #plotting the data
 q1 <- female_pop %>% 
   group_by(year) %>% 
   summarise(
-    total_women = n(),
-    in_labor_force = sum(lfp == "In labor force", self_employed == "Self-employed", employed == "Employed", na.rm = TRUE),
-    lfp_rate = in_labor_force / total_women
+    lfp_rate = weighted.mean(n_lfp, wgt, na.rm=T)*100
   )
 
 ggplot(data = q1, mapping = aes(
   x = year,
   y = lfp_rate
-))+ geom_line()
+)) + labs(
+  title = "Female Labor Participation rate evolved since 1994",
+  x = "Year",
+  y = "Participation Rate(%)"
+)+geom_line() + geom_point()
 
 unique(female_pop$education)
 unique(female_pop$age)
