@@ -40,6 +40,21 @@ ggplot(data = q1, mapping = aes(
   y = "Participation Rate(%)"
 )+geom_line() + geom_point()
 
-unique(female_pop$education)
-unique(female_pop$age)
-unique(female_pop$lfp)
+#The second question: Among women older than 25, which groups (race, age, income percentile etc) of people had the biggest changes in labor force participation since 1994?
+#From the start they ask for women older than 25, we can use age > 25 from the get go
+q2 <- female_pop %>% 
+  filter(age>25) %>% 
+  group_by(year, age) %>% 
+  summarise(
+    lfp_rate = weighted.mean(n_lfp, wgt, na.rm=T)*100, groups. = "drop"
+  )
+
+ggplot(data = q2, mapping = aes(
+  x = year,
+  y = lfp_rate,
+  color = age
+)) + labs(
+  title = "Female Labor Participation rate for each age bracket since 1994",
+  x = "Year",
+  y = "Participation Rate(%)"
+)+geom_line(size=0.5) + geom_point() + theme_bw()
